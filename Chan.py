@@ -178,6 +178,9 @@ class CChan:
         elif self.data_src == DATA_SRC.CSV:
             from DataAPI.csvAPI import CSV_API
             _dict[DATA_SRC.CSV] = CSV_API
+        elif self.data_src == DATA_SRC.MQL5:
+            from DataAPI.MQL5API import CMQL5
+            _dict[DATA_SRC.MQL5] = CMQL5
         if self.data_src in _dict:
             return _dict[self.data_src]
         assert isinstance(self.data_src, str)
@@ -185,6 +188,7 @@ class CChan:
             raise CChanException("load src type error", ErrCode.SRC_DATA_TYPE_ERR)
         package_info = self.data_src.split(":")[1]
         package_name, cls_name = package_info.split(".")
+        print(f"from DataAPI.{package_name} import {cls_name}")
         exec(f"from DataAPI.{package_name} import {cls_name}")
         return eval(cls_name)
 
@@ -209,7 +213,7 @@ class CChan:
             raise CChanException("最高级别没有获得任何数据", ErrCode.NO_DATA)
 
     def set_klu_parent_relation(self, parent_klu, kline_unit, cur_lv, lv_idx):
-        if self.conf.kl_data_check and kltype_lte_day(cur_lv) and kltype_lte_day(self.lv_list[lv_idx-1]):
+        if self.conf.kl_data_check and kltype_lte_day(cur_lv) and kltype_lte_day(self.lv_list[lv_idx - 1]):
             self.check_kl_consitent(parent_klu, kline_unit)
         parent_klu.add_children(kline_unit)
         kline_unit.set_parent(parent_klu)
@@ -245,7 +249,8 @@ class CChan:
                     kline_unit = self.get_next_lv_klu(lv_idx)
                     self.try_set_klu_idx(lv_idx, kline_unit)
                     if not kline_unit.time > self.klu_last_t[lv_idx]:
-                        raise CChanException(f"kline time err, cur={kline_unit.time}, last={self.klu_last_t[lv_idx]}", ErrCode.KL_NOT_MONOTONOUS)
+                        raise CChanException(f"kline time err, cur={kline_unit.time}, last={self.klu_last_t[lv_idx]}",
+                                             ErrCode.KL_NOT_MONOTONOUS)
                     self.klu_last_t[lv_idx] = kline_unit.time
                 except StopIteration:
                     break
@@ -258,8 +263,8 @@ class CChan:
             self.add_new_kl(cur_lv, kline_unit)
             if parent_klu:
                 self.set_klu_parent_relation(parent_klu, kline_unit, cur_lv, lv_idx)
-            if lv_idx != len(self.lv_list)-1:
-                for _ in self.load_iterator(lv_idx+1, kline_unit, step):
+            if lv_idx != len(self.lv_list) - 1:
+                for _ in self.load_iterator(lv_idx + 1, kline_unit, step):
                     ...
                 self.check_kl_align(kline_unit, lv_idx)
             if lv_idx == 0 and step:

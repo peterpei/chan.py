@@ -6,6 +6,7 @@ class DATA_SRC(Enum):
     BAO_STOCK = auto()
     CCXT = auto()
     CSV = auto()
+    MQL5 = auto()
 
 
 class KL_TYPE(Enum):
@@ -23,11 +24,16 @@ class KL_TYPE(Enum):
     K_15M = 12
     K_30M = 13
     K_60M = 14
-    K_DAY = 15
-    K_WEEK = 16
-    K_MON = 17
-    K_QUARTER = 18
-    K_YEAR = 19
+    # added by peter
+    K_H1 = 14
+    K_H4 = 15
+    K_H12 = 16
+
+    K_DAY = 15 + 2
+    K_WEEK = 16 + 2
+    K_MON = 17 + 2
+    K_QUARTER = 18 + 2
+    K_YEAR = 19 + 2
 
 
 class KLINE_DIR(Enum):

@@ -1,0 +1,6 @@
+CChan
+    kl_datas (级别, kline_list各个级别的缠论元素)
+
+CKLine_list
+   klc 合并K线 k line combine
+   klu 单独k线 unit

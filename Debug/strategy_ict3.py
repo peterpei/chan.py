@@ -25,9 +25,9 @@ if __name__ == "__main__":
     代码不能直接跑，仅用于展示如何实现小级别K线更新直接刷新CChan结果
     """
     code = "sz.000001"
-    begin_time = "2024-09-10"
+    begin_time = "2023-09-10"
     end_time = None
-    data_src_type = DATA_SRC.BAO_STOCK
+    data_src_type = DATA_SRC.MQL5
     lv_list = [KL_TYPE.K_60M, KL_TYPE.K_15M]
 
     config = CChanConfig({
